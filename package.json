@@ -23,8 +23,10 @@
   },
   "homepage": "https://github.com/LeanyLabs/konva-node-video-example#readme",
   "dependencies": {
-    "canvas": "^2.7.0",
+    "canvas": "^2.10.2",
+    "canvas-constructor": "^7.0.0",
     "execa": "^5.0.0",
+    "jsdom": "^20.0.3",
     "konva": "^7.2.5",
     "konva-node": "^0.11.2"
   }

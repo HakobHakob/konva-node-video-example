@@ -1,13 +1,13 @@
-// init Konva
-require("konva-node");
-const { renderVideo } = require("./renderVideo");
-const path = require("path");
+// node src/index.js
+require("konva-node")
+const path = require("path")
+const { renderTextEffect } = require("./renderTextEffects")
 
-async function run() {
-  const outputDir = path.join(__dirname, "../out");
-  const output = path.join(__dirname, "../output.mp4");
+const run =  async() => {
+  const outputDir = path.join(__dirname, "../out")
+  const output = path.join(__dirname, "../tmpVideo/output.mp4")
 
-  await renderVideo({ outputDir, output });
+  await renderTextEffect({outputDir,output})
 }
 
-run().catch(console.error);
+run().catch(console.error)

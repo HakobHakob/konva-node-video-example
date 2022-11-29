@@ -19,33 +19,44 @@ const {
 const renderText = (stage, layer, TEXT_EFFECTS) => {
   const animationType = {
     leftToRight: (el, duration) => {
-      let time = duration
+      // let time = duration
+      // !time ? (time = 8) : (time = duration)
 
-      !time ? (time = 2) : (time = duration)
+      // If any operand of && operator is falsy (false, 0, null, undefined, NaN, "") then duration will be assigned the first falsy value.
+     // If all operands of && operator is not falsy, then the last operand will be assigned to duration.
+      !duration && (duration = 10)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
 
+      console.log("initX", initX)
+      console.log("initY", initY)
+
       el.position({
-        x: 0,
+        x: stage.width() /2 ,
         y: stage.height() / 2,
       })
 
+
       el.to({
         x: initX,
-        duration: time,
+        y:initY,
+        duration: duration,
+        // duration: time,
       })
     },
     rotateExitRight: (el) => {
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
+      let animSpeed = 0.05
+      let animInit = false
 
       let animRotate = new Konva.Animation((frame) => {
         el.rotation(frame.time % 360)
       }, layer)
 
-      let animMove = new Konva.Animation((frame) => {
-        el.x(initX + frame.time)
+      let animMove = new Konva.Animation((frame) => {       
+        el.x(initX + frame.time * animSpeed)
       }, layer)
 
       animInit = true
@@ -60,47 +71,26 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
           y: initY,
           rotation: 0,
         })
-        layer.draw()
-      }, 2000)
+        
+      }, 20000)
     },
 
     fadeInItem: (el, duration) => {
-      !duration && (duration = 3)
+      let time = duration
+      !time ? (time = 10) : (time = duration)
 
-      let initItemProps = el[0].attrs
       el[0].opacity(0)
 
       new Konva.Tween({
         node: el[0],
         easing: Konva.Easings.EaseIn,
-        duration: duration,
+        duration: time,
         opacity: 1,
       }).play()
-    },
-
-    easingLeftToRight: (el, duration) => {
-      !duration && (duration = 2)
-
-      let initX = el[0].attrs.x
-      let initY = el[0].attrs.y
-
-      el.position({
-        x: -el[0].attrs.x / 2,
-        y: stage.height() / 2,
-      })
-
-      el.tween = new Konva.Tween({
-        node: el[0],
-        x: initX,
-        easing: Konva.Easings.StrongEaseOut,
-        duration: duration,
-      })
-
-      el.tween.play()
-    },
+    },    
 
     spellTowardsTheScreen: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 10)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
@@ -109,7 +99,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         scaleX: 12,
         scaleY: 12,
         opacity: 0,
-        onFinish: function () {
+        onFinish(){
           el[0].tween.reset()
         },
       })
@@ -118,7 +108,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     shrinkToCanvas: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 10)
 
       el[0].scale({
         x: 12,
@@ -138,13 +128,13 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     opacityFadeOut: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 10)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
         duration: duration,
         opacity: 0,
-        onFinish: function () {
+        onFinish() {
           el[0].tween.reset()
         },
       })
@@ -153,7 +143,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     opacityFadeIn: (el, duration) => {
-      !duration && (duration = 3)
+      !duration && (duration = 10)
 
       el[0].opacity(0)
       el[0].tween = new Konva.Tween({
@@ -166,7 +156,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     typewriting: (el, duration) => {
-      !duration && (duration = 3)
+      !duration && (duration = 10)
 
       if (el[0].attrs.name != "text") return
 
@@ -188,35 +178,37 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },   
 
     fallingAndBouncing: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 10)
 
-      let initX = el[0].attrs.x
+      let initX = el[0].attrs.x 
       let initY = el[0].attrs.y
 
       el[0].position({
-        x: stage.width() / 2,
+        x: stage.width() / 2 ,
         y: 0,
       })
+      el[0].opacity(0)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
         x: initX,
         y: initY,
         easing: Konva.Easings.BounceEaseOut,
-        duration,
+        duration:duration,
+        opacity:1,
       })
 
       el[0].tween.play()
     },
 
     twistyFallingAndBouncing: (el, duration) => {
-      !duration && (duration = 1)
+      !duration && (duration = 10)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
 
       el[0].rotate(-30)
-
+      el[0].opacity(0)
       el[0].position({
         x: stage.width() / 2,
         y: 0,
@@ -228,6 +220,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         y: initY,
         easing: Konva.Easings.BounceEaseOut,
         duration,
+        opacity:1,
       })
 
       el[0].tween.play()
@@ -243,7 +236,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     backEasingMiddleToTop: (el, duration) => {
-      !duration && (duration = 0.75)
+      !duration && (duration = 7.5)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -265,7 +258,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     middleToTopAndRotateClassicNegative: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 15)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -292,7 +285,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     middleToTopAndRotateClassicPositive: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 15)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -319,7 +312,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     middleToTopAndRotateNegative: (el, duration) => {
-      !duration && (duration = 2.45)
+      !duration && (duration = 24.5)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -346,7 +339,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     middleToTopAndRotatePositive: (el, duration) => {
-      !duration && (duration = 2.45)
+      !duration && (duration = 24.5)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -373,13 +366,13 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     twistyRotatedRightToTheLeft: (el, duration) => {
-      !duration && (duration = 1.8)
+      !duration && (duration = 18)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
 
       el[0].rotate(30)
-
+      el[0].opacity(0)
       el[0].position({
         x: stage.width(),
         y: initY,
@@ -390,6 +383,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         x: initX,
         easing: Konva.Easings.BackEaseOut,
         duration,
+        opacity:1,
       })
 
       el[0].tween.play()
@@ -405,7 +399,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     centeredResizingAndRotationingOnTheMiddle: (el, duration) => {
-      !duration && (duration = 1)
+      !duration && (duration = 10)
 
       el[0].scale({
         x: 0,
@@ -427,7 +421,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     centeredResizingOnTheMiddle: (el, duration) => {
-      !duration && (duration = 1)
+      !duration && (duration = 10)
 
       el[0].scale({
         x: 0,
@@ -446,7 +440,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
     },
 
     easingRightToTheLeft: (el, duration) => {
-      !duration && (duration = 2)
+      !duration && (duration = 10)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -456,29 +450,33 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         y: stage.height() / 2,
       })
 
+      el[0].opacity(0)
+
       el[0].tween = new Konva.Tween({
         node: el[0],
         x: initX,
         easing: Konva.Easings.StrongEaseOut,
         duration,
+        opacity:1,
       })
 
       el[0].tween.play()
-    },
+    },    
   }
 
   const itemType = {
     text: () => {
-      let el = new Konva.Text({
-        width: 350,
-        height: 106,
-        x: stage.width() / 2,
-        y: stage.height() / 2,
+      let el = new Konva.Text({        
+        // width: 350,
+        // height: 150,
+        x: 0,
+        y: 350,
         text: "Simple Text",
-        fontSize: 50,
+        fontSize: 100,
         fontFamily: "Calibri",
         fill: "red",
-        name: "text",
+        name: "text",      
+        
       })
       el.setAttr("offset", {
         x: el.width() / 2,
@@ -507,7 +505,7 @@ const renderTextEffect = async ({ outputDir, output }) => {
   })
 
   const start = Date.now()
-  const frames = 2 * videoFps
+  const frames = 5 * videoFps
 
   try {
     let layer = new Konva.Layer({})

@@ -2,13 +2,11 @@ const TEXT_EFFECTS = [
   "leftToRight",
   "rotateExitRight",
   "fadeInItem",
-  "easingLeftToRight",
   "spellTowardsTheScreen",
   "shrinkToCanvas",
   "opacityFadeOut",
   "opacityFadeIn",
   "typewriting",
-  "blurFadeIn",
   "fallingAndBouncing",
   "twistyFallingAndBouncing",
   "backEasingMiddleToTop",
@@ -20,6 +18,7 @@ const TEXT_EFFECTS = [
   "centeredResizingAndRotationingOnTheMiddle",
   "centeredResizingOnTheMiddle",
   "easingRightToTheLeft",
+  
 ]
 
 const data = {

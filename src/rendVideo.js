@@ -13,9 +13,9 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
   const animationType = {
     leftToRight: (el, duration) => { 
       
-      const some = el.forEach(element => {
-        console.log("ellllllllllllll---16", element)
-      });
+      // const some = el.forEach(element => {
+      //   console.log("ellllllllllllll---16", element)
+      // });
 
 
 

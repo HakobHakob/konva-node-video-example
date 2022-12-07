@@ -27,18 +27,18 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
       // If all operands of && operator is not falsy, then the last operand will be assigned to duration.
       // !duration && (duration = 10)
 
-      // let initX = el.attrs.x
-      // // let initY = el.attrs.y
+      let initX = el.attrs.x
+      // let initY = el.attrs.y
 
-      // el.position({
-      //   x: 0,
-      //   y: stage.height() / 2,
-      // })
+      el.position({
+        x: 0,
+        y: stage.height() / 2,
+      })
 
-      // el.to({
-      //   x: initX,
-      //   duration: time,
-      // })
+      el.to({
+        x: initX,
+        duration: time,
+      })
     },
 
     rotateExitRight: (el) => {

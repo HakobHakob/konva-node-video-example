@@ -1,50 +1,46 @@
 require("konva-node")
 const Konva = require("konva")
 const { loadImage } = require("canvas")
+const stateJson = require("./project.json")
+const layersDataArr = stateJson.layers.mainState.data
 
-const {
-  TEXT_EFFECTS,
-  data,
-  templateWidth,
-  templateHeight,
-  videoFps,
-} = require("./consts")
-const {
-  // loadBackgroundImage,
-  saveFrame,
-  createVideo,
-  combineAnimations,
-} = require("./videoUtils")
+const { EFFECTS, data, videoFps } = require("./consts")
 
-const renderText = (stage, layer, TEXT_EFFECTS) => {
+const { saveFrame, createVideo, combineAnimations } = require("./videoUtils")
+
+const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {  
+
   const animationType = {
-    leftToRight: (el, duration) => {
-      // let time = duration
-      // !time ? (time = 8) : (time = duration)
+    leftToRight: (el, duration) => { 
+      
+      const some = el.forEach(element => {
+        console.log("ellllllllllllll---16", element)
+      });
+
+
+
+      let time = duration
+
+      !time ? (time = 8) : (time = duration)
 
       // If any operand of && operator is falsy (false, 0, null, undefined, NaN, "") then duration will be assigned the first falsy value.
-     // If all operands of && operator is not falsy, then the last operand will be assigned to duration.
-      !duration && (duration = 10)
+      // If all operands of && operator is not falsy, then the last operand will be assigned to duration.
+      // !duration && (duration = 10)
 
-      let initX = el[0].attrs.x
-      let initY = el[0].attrs.y
+      // let initX = el.attrs.x
+      // // let initY = el.attrs.y
 
-      console.log("initX", initX)
-      console.log("initY", initY)
+      // el.position({
+      //   x: 0,
+      //   y: stage.height() / 2,
+      // })
 
-      el.position({
-        x: stage.width() /2 ,
-        y: stage.height() / 2,
-      })
-
-
-      el.to({
-        x: initX,
-        y:initY,
-        duration: duration,
-        // duration: time,
-      })
+      // el.to({
+      //   x: initX,
+      //   duration: time,
+      // })
     },
+
     rotateExitRight: (el) => {
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -55,7 +51,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         el.rotation(frame.time % 360)
       }, layer)
 
-      let animMove = new Konva.Animation((frame) => {       
+      let animMove = new Konva.Animation((frame) => {
         el.x(initX + frame.time * animSpeed)
       }, layer)
 
@@ -71,23 +67,23 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
           y: initY,
           rotation: 0,
         })
-        
       }, 20000)
     },
 
     fadeInItem: (el, duration) => {
-      let time = duration
-      !time ? (time = 10) : (time = duration)
+      !duration && (duration = 2)
+      let zero = parseInt(0)
+      let one = 1
+      // let initItemProps = el.attrs
+      el.opacity(zero)
 
-      el[0].opacity(0)
-
-      new Konva.Tween({
-        node: el[0],
-        easing: Konva.Easings.EaseIn,
-        duration: time,
-        opacity: 1,
-      }).play()
-    },    
+      el.tween = new Konva.Tween({
+        node: el,
+        duration: duration,
+        opacity: one,
+      })
+      el.tween.play()
+    },
 
     spellTowardsTheScreen: (el, duration) => {
       !duration && (duration = 10)
@@ -99,7 +95,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         scaleX: 12,
         scaleY: 12,
         opacity: 0,
-        onFinish(){
+        onFinish() {
           el[0].tween.reset()
         },
       })
@@ -164,7 +160,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
 
       let i = 0
 
-      const  typeWriter = () => {
+      const typeWriter = () => {
         if (i <= textValue.length) {
           el[0].setAttrs({
             text: textValue.substr(0, i),
@@ -175,16 +171,16 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         }
       }
       typeWriter()
-    },   
+    },
 
     fallingAndBouncing: (el, duration) => {
       !duration && (duration = 10)
 
-      let initX = el[0].attrs.x 
+      let initX = el[0].attrs.x
       let initY = el[0].attrs.y
 
       el[0].position({
-        x: stage.width() / 2 ,
+        x: stage.width() / 2,
         y: 0,
       })
       el[0].opacity(0)
@@ -194,8 +190,8 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         x: initX,
         y: initY,
         easing: Konva.Easings.BounceEaseOut,
-        duration:duration,
-        opacity:1,
+        duration: duration,
+        opacity: 1,
       })
 
       el[0].tween.play()
@@ -220,7 +216,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         y: initY,
         easing: Konva.Easings.BounceEaseOut,
         duration,
-        opacity:1,
+        opacity: 1,
       })
 
       el[0].tween.play()
@@ -383,7 +379,7 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         x: initX,
         easing: Konva.Easings.BackEaseOut,
         duration,
-        opacity:1,
+        opacity: 1,
       })
 
       el[0].tween.play()
@@ -457,81 +453,113 @@ const renderText = (stage, layer, TEXT_EFFECTS) => {
         x: initX,
         easing: Konva.Easings.StrongEaseOut,
         duration,
-        opacity:1,
+        opacity: 1,
       })
 
       el[0].tween.play()
-    },    
+    },
   }
 
   const itemType = {
-    text: () => {
-      let el = new Konva.Text({        
-        // width: 350,
-        // height: 150,
-        x: 0,
-        y: 350,
-        text: "Simple Text",
-        fontSize: 100,
-        fontFamily: "Calibri",
-        fill: "red",
-        name: "text",      
-        
+    textLayer: (layerData) => {
+      const FONT_SIZE = parseInt(layerData.meta.fontSize)
+      let el = new Konva.Text({
+        // width: layerData.dimentions.width,
+        // height: layerData.dimentions.height,
+        x: layerData.dimentions.coords.x,
+        y: layerData.dimentions.coords.y,
+        text: layerData.meta.value,
+        fontSize: FONT_SIZE,
+        fontFamily: layerData.meta.fontFamily,
+        fill: "red", //txtLayersData.meta.color,// berel
+        opacity: layerData.opacity,
+        name: "textLayer",
       })
+
+      //Layeri stexcman koordinatner
       el.setAttr("offset", {
-        x: el.width() / 2,
-        y: el.height() / 2,
+        x: 0,
+        y: 0,
       })
       layer.add(el)
       layer.draw()
     },
+    image: (layerData) => {
+      let imgUrl = layerData.meta.value
+      // "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0tk7Wlyh7QyNhcMUhvwQ5mn1keNtI88IOEA&usqp=CAU"
+      let el = Konva.Image.fromURL(imgUrl, (el) => {
+        el.setAttrs({
+          width: layerData.dimentions.width,
+          height: layerData.dimentions.height,
+          x: layerData.dimentions.coords.x,
+          y: layerData.dimentions.coords.y,
+          name: "image",
+          order: layerData.order,
+        })
+
+        layer.add(el)
+        layer.batchDraw()
+        el.setAttr("offset", {
+          x: 0,
+          y: 0,
+        })
+      })
+    },
   }
 
-  itemType["text"]()
+  const randomEffect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)]
 
-  const textRandomEffect =
-    TEXT_EFFECTS[Math.floor(Math.random() * TEXT_EFFECTS.length)]
+  if (layerData.type === "TEXT_LAYER") {
+    itemType["textLayer"](layerData)
+    animationType[randomEffect](stage.find("." + "textLayer"))
+  }
+
+  if (
+    layerData.type === "IMAGE_LAYER" &&
+    layerData.placeholder.type !== "Background"
+  ) {
+    itemType["image"](layerData)
+    animationType[randomEffect](stage.find("." + "image"))
+  }
 
   //To select shapes by name with Konva, we can use the find() method using the . selector.
   // The find() method returns an array of nodes that match the selector string.
-  animationType[textRandomEffect](stage.find("." + "text"))
- 
+  // animationType[textRandomEffect](stage.find("." + "textLayer"))
 }
 
-const renderTextEffect = async ({ outputDir, output }) => {
+const rendVideo = async ({ outputDir, output }) => {
+  const canvasSize = stateJson.layers.mainState.canvasSize
+
   const stage = new Konva.Stage({
-    width: templateWidth,
-    height: templateHeight,
+    width: canvasSize.width,
+    height: canvasSize.height,
   })
 
   const start = Date.now()
-  const frames = 5 * videoFps
+  const frames = layersDataArr.length * videoFps
 
   try {
     let layer = new Konva.Layer({})
     let group = new Konva.Group({ clip: data.frameGroup })
-
     let image = new Konva.Image({ draggable: false })
     let fadeImage = null
-    let imageObj = await loadImage(
-      "https://assets.codepen.io/255591/nasa_sat.png"
-    )
 
+    const backgroundLayerData = layersDataArr.find((templateLayers) => {
+      return templateLayers.placeholder.type === "Background"
+    })
+
+    //backgroundLayerData.meta.value --> background Image URL
+    let imageObj = await loadImage(backgroundLayerData.meta.value)
     stage.add(layer)
 
     // Use the html image object to load the image and handle when laoded.
-    const renderBackground = (
-      image,
-      imageObj,
-      group,
-      fadeImage,
-      layer,
-      data
-    ) => {
+    const rendBackground = (image, imageObj, group, fadeImage, layer, data) => {
       image.image(imageObj) // set the Konva image content to the html image content
 
       // set the Konva image attributes as needed
       image.setAttrs({
+        // image: video,
+        draggable: false,
         x: data.frameGroup.x,
         y: data.frameGroup.y,
         width: data.frameGroup.width,
@@ -547,9 +575,44 @@ const renderTextEffect = async ({ outputDir, output }) => {
       })
       layer.add(fadeImage)
     }
-    renderBackground(image, imageObj, group, fadeImage, layer, data)
+    rendBackground(image, imageObj, group, fadeImage, layer, data)
 
-    const animate = combineAnimations(renderText(stage, layer, TEXT_EFFECTS))
+    const rendLayers = (stage, layer, EFFECTS, layersDataArr) => {
+      // const txtLayersData = layersDataArr.find((templateLayers) => {
+      //   return templateLayers.type === "TEXT_LAYER"
+      // })
+      // const txtLayersArr = txtLayersData.meta.value
+
+      //ms ---> delay-i pakagci tivna het talis
+      // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+      // ;(async () => {
+      //   let index = 0
+      //   while (index < layersDataArr.length) {
+      //     // Wait to do this one until a delay after the last one
+      //     if (index > 0) {
+      //       await delay(5000)
+      //     }
+      //     // Do this one
+      //     // console.log("layersDataArr[index]----------599",layersDataArr[index])
+      //     rendLayersEffect(stage, layer, EFFECTS, layersDataArr[index])
+      //     ++index
+      //   }
+      // })()
+
+      var i = 0
+      var interval = setInterval(() => {
+        var layerObj = layersDataArr[i]
+        // do whatever
+        rendLayersEffect(stage, layer, EFFECTS, layerObj)
+        i++
+        if (i === layersDataArr.length) clearInterval(interval)
+      }, 3000)
+    }
+
+    const animate = combineAnimations(
+      rendLayers(stage, layer, EFFECTS, layersDataArr)
+    )
 
     console.log("generating frames...")
 
@@ -575,5 +638,5 @@ const renderTextEffect = async ({ outputDir, output }) => {
 }
 
 module.exports = {
-  renderTextEffect,
+  rendVideo,
 }
